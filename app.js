@@ -11,6 +11,8 @@ function app(port) {
     } else {
       res.status(404);
     }
+    res.send(JSON.stringify(req.headers));
+
     res.end();
    });
 
