@@ -6,13 +6,11 @@ function app(port) {
   app.use(express.static('public'));
 
   app.get('/token', (req, res) => {
-    if (req.headers["X-MS-TOKEN-AAD-ACCESS-TOKEN"] || req.headers["X-MS-TOKEN-AAD-ID-TOKEN"]) { 
-      res.status(200).send(req.headers["X-MS-TOKEN-AAD-ACCESS-TOKEN"]);
+    if (req.headers["x-ms-token-aad-access-token"]) { 
+      res.status(200).send(req.headers["x-ms-token-aad-access-token"]);
     } else {
       res.status(404);
     }
-    res.send(JSON.stringify(req.headers));
-
     res.end();
    });
 
