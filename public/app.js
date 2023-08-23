@@ -68,7 +68,7 @@ window.onload = async () => {
   if (aadtoken) {
     console.log(aadtoken);
     const tokenDiv = document.getElementById('token');
-    tokenDiv.style.visibility = "none";
+    tokenDiv.style.display = "none";
   } else {
     console.warn(`No token found. Please specify a token in the input box.`)
   }
