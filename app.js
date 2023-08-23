@@ -11,6 +11,7 @@ function app(port) {
     } else {
       res.status(404);
     }
+    res.end();
    });
 
   app.listen(port, () => {

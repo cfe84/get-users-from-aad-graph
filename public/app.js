@@ -25,12 +25,12 @@ async function getTokenAsync() {
 const fields = ["id", "displayName", "mail", "jobTitle", "officeLocation", "mobilePhone", "businessPhones"];
 
 function userInfoToRow(fields, userInfo) {
-  const columns = fields.map(field => `<td>${!!userInfo ? userInfo[field] : "Not found"}</td>`);
+  const columns = fields.map(field => `<td>${!!userInfo ? userInfo[field] : "Not found"}\t</td>`);
   return `<tr>${columns.join('')}</tr>`;
 }
 
 function titleRow(fields) {
-  const columns = fields.map(field => `<th>${field}</th>`);
+  const columns = fields.map(field => `<th>${field}\t</th>`);
   return `<tr>${columns.join('')}</tr>`;
 }
 
@@ -39,11 +39,14 @@ let aadtoken = null;
 
 async function processAsync() {
   const token = aadtoken || document.getElementById('input-token').value;
+  const output = document.getElementById('output');
   const inputTextArea = document.getElementById('input');
   const input = inputTextArea.value;
   const inputs = input.split('\n');
   let res = "";
+  let i = 1;
   for(let input of inputs) {
+    output.innerHTML = `<tbody>${titleRow(fields)}${res}</tbody><tr><td colspan="6">Processing ${i++} of ${inputs.length}</td></tr>`;
     if (cache[input] === undefined) {
       console.log('cache miss');
       const userInfo = await getUserInfoAsync(token, input);
@@ -53,8 +56,7 @@ async function processAsync() {
     }
     res += `${userInfoToRow(fields, cache[input])}`;
   }
-  res = `<table>${titleRow(fields)}${res}</table>`;
-  const output = document.getElementById('output');
+  res = `<tbody>${titleRow(fields)}${res}</tbody>`;
   output.innerHTML = res;
 }
 
