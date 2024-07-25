@@ -1,10 +1,37 @@
+/**
+ * COPYRIGHT 2023 - Microsoft Corporation
+ * Author: Charles FEVAL (charles.feval@microsoft.com)
+ * 
+ * This script enriches a list of users with additional information from Microsoft Graph API:
+ * - displayName
+ * - givenName
+ * - jobTitle
+ * - e-mail
+ * 
+ * You need Node.js installed to run this script. It can be downloaded from https://nodejs.org/ (Use the LTS version)
+ * 
+ * Usage: node process.js [file.csv] > output.csv
+ * 
+ * File needs to be a comma separated file with a header row, and at least one column named "organizer_id".
+ * (It can contain more columns, which will be restituted in the output)
+ * 
+ */
+
 const fs = require('fs');
 const https = require('https');
 const readline = require('node:readline');
 
 const UNAUTHORIZED = "Unauthorized";
-const TEST_USER_ID = "2a38ca76-123d-4f5d-b139-a70daed5c6c0";
+const TEST_USER_ID = "me";
 const TOKEN_FILE = ".token";
+
+
+const file = process.argv[2];
+
+if (!file) {
+  console.error("Usage: node process.js [file.csv] > output.csv");
+  return;
+}
 
 Promise.parallel = function(degree, promises) {
   let index = 0;
@@ -83,12 +110,8 @@ function getUserInfoAsync(userId, token) {
   });
 }
 
-function getUserId(user) {
-  return user.organizer_id || user.user_id;
-}
-
 async function refreshTokenAsync() {
-  token = await readFromConsoleAsync(`Token is dead. Please refresh go to https://developer.microsoft.com/en-us/graph/graph-explorer, and provide it: `);
+  token = await readFromConsoleAsync(`Token is dead. Please refresh go to https://developer.microsoft.com/en-us/graph/graph-explorer, click on "Access token", and paste it there: `);
   saveToken(token);
   return token;
 }
@@ -141,12 +164,7 @@ async function enrichUsers(users, token) {
   await Promise.parallel(20, promises);
 }
 
-const file = process.argv[2];
 
-if (!file) {
-  console.error("Please specify a file name");
-  return;
-}
 runAsync(file).then();
 
 
